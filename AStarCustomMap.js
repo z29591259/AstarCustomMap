@@ -29,10 +29,6 @@ class PointCost extends Point {
         this.Path.push(here.Id);
     }
 
-    PathStr() {
-        return this.Path.join(',');
-    }
-
     /**
     * Calculate cost, x, and y distance from start and end points
     * @var Point here current point
