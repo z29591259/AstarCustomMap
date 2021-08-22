@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>AStar Custom Map</title>
+	<script src="AStarCustomMap.js"></script>
+	<style>
+		html {
+			font-size: 16px;
+			text-align: center;
+		}
+
+		#map {
+			font-size: 0.07em;
+			margin-left: auto;
+			margin-right: auto;
+			background-color: #c0e7ff;
+			position: relative;
+			width: 320em;
+			height: 322em;
+		}
+
+		.point {
+			background-color: #ffffff;
+			border-color: black;
+			border-style: solid;
+			display: inline-block;
+			position: absolute;
+			width: 3em;
+			height: 3em;
+		}
+
+		.point>span {
+			display: inline-block;
+			position: absolute;
+		}
+
+		.line {
+			display: inline-block;
+			position: absolute;
+			background-color: darkgray;
+			width: 100em;
+			height: 4em;
+		}
+
+		.pathline {
+			display: inline-block;
+			position: absolute;
+			background-color: red;
+			width: 100em;
+			height: 4em;
+		}
+
+		.up90 {
+			transform-origin: left bottom;
+			transform: rotate(-90deg);
+		}
+
+		.down90 {
+			transform-origin: left bottom;
+			transform: rotate(90deg);
+		}
+
+		.left180 {
+			transform-origin: left bottom;
+			transform: rotate(-180deg);
+		}
+	</style>
+</head>
+
+<body>
+	<h1>AStar Custom Map</h1>
+	<div id="map"></div>
+	<br />
+	<section style="text-align: center;">
+		<label>Start: </label>
+		<select id="start">
+			<option value="0">0</option>
+		</select>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<label>End: </label>
+		<select id="end"></select>
+		&nbsp;&nbsp;&nbsp;&nbsp;
+		<input type="button" onclick="ShowPath();" value="Show Path" />
+	</section>
+	<footer><a href="https://github.com/z29591259/AstarCustomMap">Source Code</a></footer>
+	<script>
+		function DrawMap(points, lines) {
+			let str = '';
+			for (let i = 0; i < points.length; i++) {
+				str += '<div class="point" style="left: ' + points[i].X + 'em; bottom: ' + points[i].Y + 'em;">' +
+					'<span style="left: 3em; bottom: 6em;">' + points[i].Id + '</span>' +
+					'</div>';
+			}
+			document.querySelector('#map').innerHTML += str;
+		}
+
+		function DrawLine(points, lines) {
+			let str = '';
+			let direction = '';
+			for (let i = 0; i < lines.length; i++) {
+				direction = '';
+				if (points[lines[i][0]].X > points[lines[i][1]].X) {
+					direction = 'left180';
+				} else if (points[lines[i][0]].Y < points[lines[i][1]].Y) {
+					direction = 'up90';
+				} else if (points[lines[i][0]].Y > points[lines[i][1]].Y) {
+					direction = 'down90';
+				}
+				str += '<div class="line ' + direction + '" style="left: ' + points[lines[i][0]].X + 'em; bottom: ' + points[lines[i][0]].Y + 'em;"></div>';
+			}
+			document.querySelector('#map').innerHTML += str;
+		}
+
+		function DrawPath(points, path) {
+			let str = '';
+			let direction = '';
+			for (let i = 0; i < path.length - 1; i++) {
+				direction = '';
+				if (points[path[i]].X > points[path[i + 1]].X) {
+					direction = 'left180';
+				} else if (points[path[i]].Y < points[path[i + 1]].Y) {
+					direction = 'up90';
+				} else if (points[path[i]].Y > points[path[i + 1]].Y) {
+					direction = 'down90';
+				}
+				str += '<div class="pathline ' + direction + '" style="left: ' + points[path[i]].X + 'em; bottom: ' + points[path[i]].Y + 'em;"></div>';
+			}
+
+			document.querySelector('#map').innerHTML += str;
+		}
+
+		function ShowPath() {
+			document.querySelectorAll('.pathline').forEach(x => document.querySelector('#map').removeChild(x));
+
+			let start = document.querySelector('#start').value;
+			let end = document.querySelector('#end').value;
+			if (start === end) {
+				alert('Start and End are same point.');
+				return;
+			}
+			let path = new AStarCustomMap(points, lines).GetPath(points[start], points[end]);
+			if (path == null || path.length === 0) {
+				alert('Find no path.');
+			} else {
+				DrawPath(points, path);
+			}
+		}
+
+		//Define map point
+		let points = [
+			new Point(0, 0, 0),
+			new Point(1, 0, 100),
+			new Point(2, 0, 200),
+			new Point(3, 0, 300),
+			new Point(4, 100, 300),
+			new Point(5, 200, 300),
+			new Point(6, 200, 200),
+			new Point(7, 200, 100),
+			new Point(8, 300, 300),
+			new Point(9, 300, 200),
+			new Point(10, 300, 100),
+			new Point(11, 300, 0),
+			new Point(12, 200, 0),
+			new Point(13, 100, 0),
+			new Point(14, 100, 100)
+		];
+
+		//Define map line which links two points
+		let lines = [
+			[0, 1],
+			[1, 2],
+			[2, 3],
+			[3, 4],
+			[4, 5],
+			[5, 6],
+			[5, 8],
+			[6, 7],
+			[6, 9],
+			[8, 9],
+			[9, 10],
+			[10, 11],
+			[11, 12],
+			[12, 13]
+		];
+
+		DrawMap(points, lines);
+		DrawLine(points, lines);
+
+		let point_options;
+		for (let i = 0; i < points.length; i++) {
+			point_options += '<option value="' + points[i].Id + '">' + points[i].Id + '</option>'
+		}
+
+		document.querySelector('#start').innerHTML = point_options;
+		document.querySelector('#end').innerHTML = point_options;
+	</script>
+</body>
+
+</html>
