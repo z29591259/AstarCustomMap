@@ -78,10 +78,12 @@
 		<select id="start">
 			<option value="0">0</option>
 		</select>
-		&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;
 		<label>End: </label>
 		<select id="end"></select>
-		&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;
+		<label><input type="checkbox" id="avoidRotation" />Avoid Rotation</label>
+		&nbsp;
 		<input type="button" onclick="ShowPath();" value="Show Path" />
 	</section>
 	<footer><a href="https://github.com/z29591259/AstarCustomMap">Source Code</a></footer>
@@ -140,7 +142,12 @@
 				alert('Start and End are same point.');
 				return;
 			}
-			let path = new AStarCustomMap(points, lines).GetPath(points[start], points[end]);
+
+			let path = new AStarCustomMap(
+				points,
+				lines,
+				{ AvoidRotation: document.querySelector('#avoidRotation').checked }
+			).GetPath(points[start], points[end]);
 			if (path == null || path.length === 0) {
 				alert('Find no path.');
 			} else {

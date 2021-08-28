@@ -1,6 +1,6 @@
 # AstarCustomMap
-Base on A* pathfinding algorithm, using custom map format, each node has a coordinate and is linked by lines. 
+Base on A* pathfinding algorithm, using custom map format, each node has a coordinate and is linked by lines. Base on the scenario, avoid rotation could be set in config.
 
-Provide a simple web to demo pathfinding function.
+![Demo Gif](https://z29591259.github.io/AstarCustomMap/demo.gif)
 
-[Demo web page](https://z29591259.github.io/AstarCustomMap/)
+[Demo page](https://z29591259.github.io/AstarCustomMap/)
