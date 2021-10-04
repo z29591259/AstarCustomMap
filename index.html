@@ -3,6 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>AStar Custom Map</title>
 	<script src="AStarCustomMap.js"></script>
 	<style>
@@ -51,9 +52,9 @@
 	</section>
 	<footer><a href="https://github.com/z29591259/AstarCustomMap">Source Code</a></footer>
 	<script>
+		let context = null;
 		let mapCanvas = createHDCanvas(350, 350);
 		document.querySelector('#map').appendChild(mapCanvas);
-		let context = mapCanvas.getContext('2d');
 		let mazeMargin = 15; //px
 		let mapPointDistance = 100; //px
 		let mapPointWidth = 10; //px
@@ -69,7 +70,7 @@
 			mapCanvas.height = h * ratio; // 实际渲染像素
 			mapCanvas.style.width = `${w}px`; // 控制显示大小
 			mapCanvas.style.height = `${h}px`; // 控制显示大小
-			mapCanvas.getContext('2d').setTransform(ratio, 0, 0, ratio, 0, 0);
+			context = mapCanvas.getContext('2d');
 			return mapCanvas;
 		}
 
@@ -79,6 +80,7 @@
 			mapCanvas.height = h * ratio;
 			mapCanvas.style.width = `${w}px`;
 			mapCanvas.style.height = `${h}px`;
+			context.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
 		}
 
 		function DrawMap(points, lines) {
@@ -195,8 +197,8 @@
 			switch (no) {
 				case 'Small':
 					mapSize = 4;
-					adjustCanvasSize(300, 300);
-					mapPointDistance = 110;
+					adjustCanvasSize(355, 330);
+					mapPointDistance = 100;
 					//Define map point
 					points = [
 						new Point(0, 0, 0),
@@ -235,8 +237,8 @@
 					break;
 				case 'Medium':
 					mapSize = 12;
-					adjustCanvasSize(500, 480);
-					mapPointDistance = 52;
+					adjustCanvasSize(550, 530);
+					mapPointDistance = 45;
 					//Define map point
 					for (let i = 0; i < mapSize * mapSize; i++) {
 						points.push(new Point(i, i % mapSize, Math.floor(i / mapSize)));
@@ -246,8 +248,8 @@
 					break;
 				case 'Large':
 					mapSize = 16;
-					adjustCanvasSize(585, 570);
-					mapPointDistance = 45;
+					adjustCanvasSize(580, 560);
+					mapPointDistance = 35;
 					//Define map point
 					for (let i = 0; i < mapSize * mapSize; i++) {
 						points.push(new Point(i, i % mapSize, Math.floor(i / mapSize)));
